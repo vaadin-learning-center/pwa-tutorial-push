@@ -9,14 +9,11 @@ class PWAConfApp {
     this.init();
   }
   async init() {
-    this.setupNavIntersectionObserver();
-    this.addLoadingIndicatorDelay();
-
     this.loadSpeakers();
     this.loadSchedule();
 
     await this.registerSW();
-    await this.initPush();
+    this.initPush();
   }
 
   async loadSpeakers() {
@@ -66,35 +63,6 @@ class PWAConfApp {
       });
     }
     return Object.assign({}, item);
-  }
-
-  addLoadingIndicatorDelay() {
-    // Only show spinner if we're delayed more than 1s
-    setTimeout(() => {
-      Array.from(document.querySelectorAll('.loader')).forEach(loader => {
-        loader.removeAttribute('hidden');
-      });
-    }, 1000);
-  }
-
-  setupNavIntersectionObserver() {
-    if (!'IntersectionObserver' in window) return;
-
-    const nav = document.querySelector('nav');
-    const header = document.querySelector('header');
-    const callback = entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          [nav, header].forEach(e => e.classList.remove('fixed'));
-        } else {
-          [nav, header].forEach(e => e.classList.add('fixed'));
-        }
-      });
-    };
-    const observer = new IntersectionObserver(callback, {
-      threshold: [0, 1]
-    });
-    observer.observe(header);
   }
 
   async registerSW() {
